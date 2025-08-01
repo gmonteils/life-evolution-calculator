@@ -1,6 +1,6 @@
-package fr.gouv.dgefp.model;
+package fr.asys.tech.model;
 
-import fr.gouv.dgefp.Constants;
+import fr.asys.tech.Constants;
 
 public class LivingCell {
 

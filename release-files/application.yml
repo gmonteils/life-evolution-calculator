@@ -1,2 +1,3 @@
 app:
   max-lifetime: 3
+  write-file-output: true

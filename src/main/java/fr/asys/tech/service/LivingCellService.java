@@ -1,7 +1,6 @@
-package fr.gouv.dgefp.service;
+package fr.asys.tech.service;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -14,17 +13,22 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import fr.gouv.dgefp.Constants;
-import fr.gouv.dgefp.model.LivingCell;
-import fr.gouv.dgefp.utils.EvolutionWatcher;
+import fr.asys.tech.Constants;
+import fr.asys.tech.model.LivingCell;
+import fr.asys.tech.repository.LivingCellOutputWriter;
+import fr.asys.tech.utils.EvolutionWatcher;
 
 @Component
 public class LivingCellService {
 
 	private final int maxLifetime;
 	
-	public LivingCellService(@Value("${app.max-lifetime:3}") int maxLifetime){
+	private List<LivingCellOutputWriter> livingCellOutputWriters;
+	
+	public LivingCellService(@Value("${app.max-lifetime:3}") int maxLifetime,
+			List<LivingCellOutputWriter> livingCellOutputWriters){
 		this.maxLifetime = maxLifetime;
+		this.livingCellOutputWriters = livingCellOutputWriters;
 	}
 	
 	public List<LivingCell> calculateEvolution(List<LivingCell> sourceLivingCells, EvolutionWatcher evolutionWatcher) {
@@ -90,14 +94,16 @@ public class LivingCellService {
 		return result.stream().collect(Collectors.toList());
 	}
 
-	public void printLivingCells(List<LivingCell> linvingCells, int i) {
-		System.out.println("\n\n");
-		System.out.println("Iteration N°" + i);
-		System.out.println("\n\n");
-		System.out.println(convertLivingCellsToString(linvingCells));
+	public void printLivingCells(List<LivingCell> linvingCells, int iteration) {
+		
+		String multilineLivingCellString = convertLivingCellsToString(linvingCells);
+		
+		for (LivingCellOutputWriter livingCellOutputWriter : livingCellOutputWriters) {
+			livingCellOutputWriter.print(multilineLivingCellString, iteration);
+		}
 	}
 	
-	/**
+	/*
 	 * Method that compute the living status of the cell at input coordinates.
 	 * @return a living cell with adjusted lifetime if the cell is (still) alive
 	 * @return null if the cell is not alive
@@ -106,7 +112,7 @@ public class LivingCellService {
 
 		LivingCell sourceLivingCell = sourceLivingCellByCoordonateMap.get(x + Constants.COORDINATE_SEPARATOR + y);
 		
-		if (sourceLivingCell != null && sourceLivingCell.getLifetime() == maxLifetime) {
+		if (sourceLivingCell != null && sourceLivingCell.getLifetime() >= maxLifetime) {
 			return null;
 		}
 		
@@ -120,7 +126,7 @@ public class LivingCellService {
 		// if the cell has 2 adjacent living cells, and is already alive, it lives
 		|| (sourceLivingCell != null && adjacentSourceLivingCells.size() >= 2)
 		// if the cell has a adjacent living cells that reach the max lifetime, it lives
-	    || (adjacentSourceLivingCells.stream().anyMatch(livingCell -> livingCell.getLifetime() == maxLifetime))) {
+	    || (adjacentSourceLivingCells.stream().anyMatch(livingCell -> livingCell.getLifetime() >= maxLifetime))) {
 			
 			LivingCell livingCell = new LivingCell();
 			livingCell.setX(x);
@@ -133,9 +139,13 @@ public class LivingCellService {
 		return null;
 	}
 
-	private Collection<? extends String> computeAdjacentCellsCoordinates(int x, int y) {
+	/*
+	 * Method that compute the 8 adjacent cells coordinates for precise coordinates
+	 * @return a list with the 8 coordinates
+	 */
+	private List<String> computeAdjacentCellsCoordinates(int x, int y) {
 		
-		Set<String> result = new HashSet<String>();
+		List<String> result = new ArrayList<String>();
 		
 		result.add((x-1) + Constants.COORDINATE_SEPARATOR + (y-1));
 		result.add((x-1) + Constants.COORDINATE_SEPARATOR + (y));
@@ -149,6 +159,10 @@ public class LivingCellService {
 		return result;
 	}
 	
+	/*
+	 * Method that convert a list of living cells into a multi-line string
+	 * @return the multi-line string representation of the living cells
+	 */
 	private String convertLivingCellsToString(List<LivingCell> livingCells) {
 		
 		StringBuilder stringBuilder = new StringBuilder();

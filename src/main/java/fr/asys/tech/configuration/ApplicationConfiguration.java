@@ -1,4 +1,4 @@
-package fr.gouv.dgefp.configuration;
+package fr.asys.tech.configuration;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

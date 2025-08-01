@@ -1,4 +1,4 @@
-package fr.gouv.dgefp;
+package fr.asys.tech;
 
 public class Constants {
 

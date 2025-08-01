@@ -1,4 +1,4 @@
-package fr.gouv.dgefp;
+package fr.asys.tech;
 
 import java.io.IOException;
 
@@ -8,7 +8,7 @@ import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import fr.gouv.dgefp.command.LifeEvolutionCalculateCommand;
+import fr.asys.tech.command.LifeEvolutionCalculateCommand;
 import picocli.CommandLine;
 import picocli.CommandLine.IFactory;
 
