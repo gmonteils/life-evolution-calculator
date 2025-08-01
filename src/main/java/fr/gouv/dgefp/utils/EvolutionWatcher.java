@@ -52,8 +52,8 @@ public class EvolutionWatcher {
 				System.out.println("--------------------------------------------------------------");
 				System.out.println("Statistics for " + evolutionData.getEvolutionName());
 				System.out.println("--------------------------------------------------------------");
-				System.out.println("Living cells count goes from " + evolutionData.getSourceCellCount() + " to " + evolutionData.getCellCount());
-				System.out.println("Cell evolution calculation lasted " + (evolutionData.getStopTimestamp() - evolutionData.getStartTimestamp()) + "ms.");
+				System.out.println("Living cells count goes from " + evolutionData.getSourceCellCount() + " to " + evolutionData.getCellCount() + ".");
+				System.out.println("Cell evolution calculation lasted " + (evolutionData.getStopTimestamp() - evolutionData.getStartTimestamp()) + " ms.");
 				if (evolutionData.getCalculatedCoordinatesCount() != null) {
 					System.out.println("Cell evolution calculation compute living status for " + evolutionData.getCalculatedCoordinatesCount() + " coordinates.");
 				}
